@@ -1,10 +1,14 @@
 package tictactoe;
 
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Main {
     static String[][] grid = new String[3][3];
     static String input;
+    static int moveRow;
+    static int moveColumn;
+    static boolean moveCorrect;
     static boolean xWon = false;
     static boolean oWon = false;
     static boolean impossible = false;
@@ -13,8 +17,8 @@ public class Main {
     public static void main(String[] args) {
 
         inputGameState();
-        getGrid();
-        gameState();
+        //gameState();
+        makeMove();
 
     }
 
@@ -27,6 +31,39 @@ public class Main {
             for (int j = 0; j < grid[i].length; j++) {
                 grid[i][j] = String.valueOf(input.charAt(index));
                 index++;
+            }
+        }
+        getGrid();
+    }
+    public static void makeMove(){
+
+        checkMove();
+        if (moveCorrect) {
+            grid[moveRow - 1][moveColumn - 1] = "X";
+            getGrid();
+        } else {
+            makeMove();
+        }
+    }
+    public static void checkMove() {
+        Scanner scanner = new Scanner(System.in);
+
+        while (true) {
+            try {
+                moveRow = scanner.nextInt();
+                moveColumn = scanner.nextInt();
+
+                if (moveRow < 1 || moveRow > 3 || moveColumn < 1 || moveColumn > 3) {
+                    System.out.println("Coordinates should be from 1 to 3!"); // prevents index out of bounds
+                } else if (!grid[moveRow - 1][moveColumn - 1].equals("_")) {
+                    System.out.println("This cell is occupied! Choose another one!"); // prevents overriding moves
+                } else {
+                    moveCorrect = true;
+                    break;
+                }
+            } catch (InputMismatchException e) {
+                System.out.println("You should enter numbers!"); //prevents incorrect input type
+                scanner.nextLine(); // consumes the remaining input
             }
         }
     }

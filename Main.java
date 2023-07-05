@@ -5,9 +5,9 @@ import java.util.Scanner;
 
 public class Main {
     static String[][] grid = new String[3][3];
-    static String input;
     static int moveRow;
     static int moveColumn;
+    static int player = 0;
     static boolean moveCorrect;
     static boolean xWon = false;
     static boolean oWon = false;
@@ -16,31 +16,43 @@ public class Main {
 
     public static void main(String[] args) {
 
-        inputGameState();
-        //gameState();
-        makeMove();
+        startGame();
 
     }
 
-    public static void inputGameState() {
-        Scanner scanner = new Scanner(System.in);
-        input = scanner.nextLine();
-        int index = 0;
+    public static void startGame() {
+        System.out.println("Let's start the game!");
 
         for (int i = 0; i < grid.length; i++) {
             for (int j = 0; j < grid[i].length; j++) {
-                grid[i][j] = String.valueOf(input.charAt(index));
-                index++;
+                grid[i][j] = "_";
+
             }
         }
         getGrid();
+
+        while (!impossible && !xWon && !oWon && !draw){
+            makeMove();
+            gameState();
+        }
     }
     public static void makeMove(){
 
+        if (player % 2 == 0){
+            System.out.println("It's player X turn.");
+        } else {
+            System.out.println("It's player O turn.");
+        }
+
         checkMove();
         if (moveCorrect) {
-            grid[moveRow - 1][moveColumn - 1] = "X";
+            if (player % 2 == 0){
+                grid[moveRow - 1][moveColumn - 1] = "X";
+            } else {
+                grid[moveRow - 1][moveColumn - 1] = "O";
+            }
             getGrid();
+            player++;
         } else {
             makeMove();
         }
@@ -50,6 +62,7 @@ public class Main {
 
         while (true) {
             try {
+                System.out.println("Which cell do you choose?");
                 moveRow = scanner.nextInt();
                 moveColumn = scanner.nextInt();
 
@@ -62,12 +75,11 @@ public class Main {
                     break;
                 }
             } catch (InputMismatchException e) {
-                System.out.println("You should enter numbers!"); //prevents incorrect input type
+                System.out.println("You should enter numbers!"); // prevents incorrect input type
                 scanner.nextLine(); // consumes the remaining input
             }
         }
     }
-
     public static void getGrid() {
         System.out.println("---------");
         for (int i = 0; i < 3; i++) {
@@ -112,28 +124,28 @@ public class Main {
 
             switch (a) {
                 case 0:
-                    line = "" + input.charAt(0) + input.charAt(1) + input.charAt(2);
+                    line = "" + grid[0][0] + grid[0][1] + grid[0][2];
                     break;
                 case 1:
-                    line = "" + input.charAt(3) + input.charAt(4) + input.charAt(5);
+                    line = "" + grid[0][0] + grid[1][0] + grid[2][0];
                     break;
                 case 2:
-                    line = "" + input.charAt(6) + input.charAt(7) + input.charAt(8);
+                    line = "" + grid[0][0] + grid[1][1] + grid[2][2];
                     break;
                 case 3:
-                    line = "" + input.charAt(0) + input.charAt(3) + input.charAt(6);
+                    line = "" + grid[0][1] + grid[1][1] + grid[2][1];
                     break;
                 case 4:
-                    line = "" + input.charAt(1) + input.charAt(4) + input.charAt(7);
+                    line = "" + grid[0][2] + grid[1][2] + grid[2][2];
                     break;
                 case 5:
-                    line = "" + input.charAt(2) + input.charAt(5) + input.charAt(8);
+                    line = "" + grid[1][0] + grid[1][1] + grid[1][2];
                     break;
                 case 6:
-                    line = "" + input.charAt(0) + input.charAt(4) + input.charAt(8);
+                    line = "" + grid[2][0] + grid[2][1] + grid[2][2];
                     break;
                 case 7:
-                    line = "" + input.charAt(2) + input.charAt(4) + input.charAt(6);
+                    line = "" + grid[0][2] + grid[1][1] + grid[2][0];
                     break;
             }
 
@@ -168,19 +180,19 @@ public class Main {
         checkDraw();
 
         if (impossible) {
-            System.out.println("Impossible");
+            System.out.println("The game became impossible to continue.");
         }
         else if (draw) {
-            System.out.println("Draw");
+            System.out.println("It's a draw.");
         }
         else if (xWon) {
-            System.out.println("X wins");
+            System.out.println("Player X wins.\nCongratulations!");
         }
         else if (oWon) {
-            System.out.println("O wins");
+            System.out.println("Player O wins.\nCongratulations!");
         }
         else {
-            System.out.println("Game not finished");
+            System.out.println("Game is not finished yet.");
         }
     }
 }
